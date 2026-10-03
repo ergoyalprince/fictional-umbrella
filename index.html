@@ -1,1539 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Prince Goyal | Handheld Dev Portfolio</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
-  <!-- Retro 8-bit & futuristic fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=VT323&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            pixel: ['"Press Start 2P"', 'monospace'],
-            screen: ['"VT323"', 'monospace'],
-            tech: ['"Share Tech Mono"', 'monospace'],
-            sans: ['"Space Grotesk"', 'sans-serif'],
-          },
-          colors: {
-            retroGreen: '#4ade80',
-            retroAmber: '#fbbf24',
-            cyberPink: '#f43f5e',
-            cyberCyan: '#06b6d4',
-            consolePurple: 'rgba(76, 29, 149, 0.85)',
-          },
-          boxShadow: {
-            'dpad': 'inset 0 2px 4px rgba(255,255,255,0.25), 0 5px 0 #111, 0 8px 10px rgba(0,0,0,0.5)',
-            'btn': 'inset 0 3px 5px rgba(255,255,255,0.35), 0 6px 0 #18181b, 0 10px 14px rgba(0,0,0,0.6)',
-            'btn-pressed': 'inset 0 2px 4px rgba(0,0,0,0.6), 0 1px 0 #18181b, 0 2px 4px rgba(0,0,0,0.4)',
-            'cartridge': '0 10px 25px -5px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255,255,255,0.2)',
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Custom scrollbars inside retro screen */
-    .screen-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .screen-scroll::-webkit-scrollbar-track {
-      background: rgba(10, 20, 15, 0.9);
-      border-left: 1px solid rgba(74, 222, 128, 0.2);
-    }
-    .screen-scroll::-webkit-scrollbar-thumb {
-      background: #22c55e;
-      border-radius: 2px;
-    }
-    .screen-scroll::-webkit-scrollbar-thumb:hover {
-      background: #4ade80;
-    }
-
-    /* CRT Scanline Filter */
-    .crt-effect::before {
-      content: " ";
-      display: block;
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
-      z-index: 40;
-      background-size: 100% 3px, 4px 100%;
-      pointer-events: none;
-      opacity: 0.85;
-    }
-
-    /* Screen Glass Glare */
-    .screen-glare::after {
-      content: "";
-      position: absolute;
-      top: -20%;
-      left: -30%;
-      width: 160%;
-      height: 60%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 45%, transparent 60%);
-      transform: rotate(-18deg);
-      pointer-events: none;
-      z-index: 41;
-    }
-
-    /* Hardware Shell Themes */
-    .theme-atomic {
-      background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.75), rgba(67, 56, 202, 0.85) 60%, rgba(30, 27, 75, 0.95)), repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 3px, transparent 3px, transparent 6px);
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -4px 8px rgba(0,0,0,0.6), 0 20px 40px -10px rgba(0,0,0,0.8);
-      border: 3px solid rgba(167, 139, 250, 0.3);
-    }
-    .theme-classic {
-      background: #c4c1b9;
-      box-shadow: inset 0 3px 6px rgba(255,255,255,0.8), inset 0 -4px 8px rgba(0,0,0,0.4), 0 20px 40px -10px rgba(0,0,0,0.8);
-      border: 3px solid #9e9b93;
-    }
-    .theme-cyber {
-      background: linear-gradient(145deg, #111827 0%, #030712 100%);
-      box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.25), 0 20px 40px -10px rgba(6, 182, 212, 0.3);
-      border: 3px solid #06b6d4;
-    }
-    .theme-stealth {
-      background: linear-gradient(160deg, #27272a 0%, #18181b 50%, #09090b 100%);
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -4px 8px rgba(0,0,0,0.7), 0 20px 40px -10px rgba(0,0,0,0.9);
-      border: 3px solid #3f3f46;
-    }
-
-    /* Tactile button active states */
-    .tactile-btn:active, .tactile-btn.active-press {
-      transform: translateY(4px);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 0 #18181b !important;
-    }
-
-    /* Speaker holes texture */
-    .speaker-grid {
-      background-image: radial-gradient(#18181b 30%, transparent 35%);
-      background-size: 6px 6px;
-    }
-
-    /* Blinking LED */
-    @keyframes battery-pulse {
-      0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px #22c55e); }
-      50% { opacity: 0.6; filter: drop-shadow(0 0 2px #22c55e); }
-    }
-    .led-glow {
-      animation: battery-pulse 2s infinite ease-in-out;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prince Goyal · Setup Utility</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0000a8;--fg:#fff;--lab:#55ffff;--val:#ffff55;--bar:#aaa;--red:#ff5555;--grn:#55ff55}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#000;color:var(--fg);font:400 15px/1.5 'JetBrains Mono',monospace;overflow:hidden}
+button{font:inherit;color:inherit}
+a{color:var(--val)}
+#post{position:fixed;inset:0;background:#000;padding:24px clamp(16px,4vw,48px);z-index:20;white-space:pre-wrap;color:#ddd;overflow:auto;cursor:pointer}
+#post b{color:var(--grn);font-weight:400}
+.cur{display:inline-block;width:.6em;height:1em;background:#ddd;vertical-align:-2px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+#bios{height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative}
+#bios:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#0000 0 2px,#0000001f 2px 3px)}
+.title{background:var(--bar);color:#000;text-align:center;padding:2px 8px;font-weight:700}
+.tabs{display:flex;overflow-x:auto;background:var(--bg);border-bottom:3px double var(--fg);scrollbar-width:none}
+.tabs button{background:none;border:0;padding:4px clamp(14px,3vw,34px);cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--lab);color:#000;font-weight:700}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:1fr minmax(240px,34%);gap:0;padding:12px clamp(8px,2vw,24px)}
+.pane{border:3px double var(--fg);padding:10px 14px;overflow:auto;min-height:0}
+.pane h2{margin:0 0 10px;font-size:15px;font-weight:700;color:var(--lab);text-align:center}
+.row{display:flex;justify-content:space-between;gap:16px;padding:1px 8px;cursor:pointer}
+.row .l{color:var(--lab)}.row .v{color:var(--val);text-align:right}
+.row.sel{background:var(--bar)}.row.sel .l,.row.sel .v{color:#000}
+.row.sel .v:before{content:"► "}
+.help{margin-left:-3px;border-left-width:0}
+.help p{margin:0 0 10px;color:var(--fg);font-family:'JetBrains Mono',monospace;font-size:14px}
+.help .keys{margin-top:18px;border-top:1px solid #8888ff;padding-top:10px;color:#ccf;font-size:13px}
+.leg{display:flex;flex-wrap:wrap;gap:4px 22px;justify-content:center;background:var(--bar);color:#000;padding:3px 8px;font-size:13px}
+.leg button{background:none;border:0;color:#000;cursor:pointer;padding:0 2px}
+.leg button:hover{background:#000;color:#fff}
+.leg b{font-weight:700}
+@media(max-width:760px){.main{grid-template-columns:1fr;grid-template-rows:auto auto;overflow:auto}.help{margin:0;border-left-width:3px;margin-top:8px}.row{flex-direction:column;gap:0;padding:4px 8px}.row .v{text-align:left}html,body{overflow:auto}}
+#dlg{position:absolute;inset:0;display:none;place-items:center;z-index:10;background:#0008}
+#dlg.show{display:grid}
+#dlg div.box{background:var(--bar);color:#000;border:3px double #000;box-shadow:8px 8px 0 #000;padding:18px 28px;text-align:center;max-width:90vw}
+#dlg .btns{display:flex;gap:24px;justify-content:center;margin-top:16px}
+#dlg .btns button{background:none;border:0;cursor:pointer;padding:0 10px}
+#dlg .btns button.on{background:#000;color:#fff}
+:focus-visible{outline:2px solid var(--val);outline-offset:1px}
+@media(prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
 </head>
-
-<body class="bg-zinc-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 select-none overflow-x-hidden font-sans">
-
-  <header class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-3 mb-2 px-2">
-    <div class="flex items-center space-x-3">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-sm font-pixel">
-        P
-      </span>
-      <div>
-        <h1 class="text-xs sm:text-sm font-pixel text-emerald-400 tracking-wider">PRINCEBOY ADVANCE SP</h1>
-        <p class="text-xs text-zinc-400 font-tech">Prince Goyal | IIIT Guwahati Full-Stack Dev</p>
-      </div>
-    </div>
-
-    <!-- Top quick controls: Skins & Audio & Scanlines -->
-    <div class="flex items-center gap-2 text-xs">
-      <div class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 flex items-center gap-1.5 shadow-sm">
-        <span class="text-zinc-400 text-[11px] font-tech uppercase">Shell:</span>
-        <button onclick="setTheme('atomic')" class="w-4 h-4 rounded-full bg-indigo-600 border border-indigo-300 hover:scale-110 transition-transform" title="Atomic Purple"></button>
-        <button onclick="setTheme('classic')" class="w-4 h-4 rounded-full bg-[#c4c1b9] border border-zinc-500 hover:scale-110 transition-transform" title="Classic DMG Grey"></button>
-        <button onclick="setTheme('cyber')" class="w-4 h-4 rounded-full bg-cyan-500 border border-cyan-200 hover:scale-110 transition-transform" title="Cyber Neon"></button>
-        <button onclick="setTheme('stealth')" class="w-4 h-4 rounded-full bg-zinc-800 border border-zinc-500 hover:scale-110 transition-transform" title="Stealth Black"></button>
-      </div>
-
-      <button id="scanlineToggleBtn" onclick="toggleScanlines()" class="bg-zinc-900 border border-zinc-700 hover:border-emerald-500/50 px-2.5 py-1 rounded-lg text-emerald-400 font-tech transition-colors flex items-center gap-1" title="Toggle Scanline Filter">
-        <i class="fa-solid fa-tv text-[10px]"></i>
-        <span class="hidden sm:inline">CRT:</span> <span id="crtStatus" class="font-bold">ON</span>
-      </button>
-
-      <button id="soundToggleBtn" onclick="toggleBgm()" class="bg-zinc-900 border border-zinc-700 hover:border-emerald-500/50 px-2.5 py-1 rounded-lg text-emerald-400 font-tech transition-colors flex items-center gap-1" title="Background Chiptune">
-        <i id="soundIcon" class="fa-solid fa-volume-xmark text-[10px]"></i>
-        <span class="hidden sm:inline">BGM:</span> <span id="soundStatus" class="font-bold">MUTED</span>
-      </button>
-    </div>
-  </header>
-
-  <main class="w-full max-w-[850px] relative transition-all duration-300">
-    <!-- Shoulder bumper buttons (L & R triggers) -->
-    <div class="flex justify-between items-center px-8 sm:px-14 -mb-2 z-0 relative">
-      <button onclick="pressTrigger('L')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-pixel px-6 py-2.5 rounded-t-xl border-t-2 border-x-2 border-zinc-600 shadow-md active:translate-y-1 transition-all">
-        [L] PREV
-      </button>
-      
-      <!-- Cartridge Slot Visual -->
-      <div class="bg-zinc-950 border-t border-x border-zinc-800 px-6 py-1 rounded-t-md text-[10px] text-zinc-500 font-pixel tracking-widest flex items-center gap-2">
-        <i class="fa-solid fa-microchip text-emerald-500/70"></i>
-        <span>SLOT-1: PRINCE_OS_v2.6</span>
-      </div>
-
-      <button onclick="pressTrigger('R')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-pixel px-6 py-2.5 rounded-t-xl border-t-2 border-x-2 border-zinc-600 shadow-md active:translate-y-1 transition-all">
-        [R] NEXT
-      </button>
-    </div>
-
-    <!-- Handheld Body Shell -->
-    <div id="consoleShell" class="theme-atomic rounded-[32px] sm:rounded-[42px] p-4 sm:p-7 relative transition-all duration-500">
-      
-      <!-- Top Bezel bar: Logo, LEDs, Power Switch -->
-      <div class="flex items-center justify-between mb-3 px-2">
-        <div class="flex items-center space-x-2">
-          <div id="powerLed" class="w-2.5 h-2.5 rounded-full bg-emerald-400 led-glow"></div>
-          <span class="text-[9px] font-pixel tracking-tighter text-emerald-300/80">POWER / BATT</span>
-        </div>
-
-        <div class="text-center">
-          <span class="font-pixel text-[11px] tracking-widest text-zinc-300 drop-shadow">PRINCE-SYSTEM 64</span>
-        </div>
-
-        <!-- Hardware Power Switch Slider -->
-        <div class="flex items-center space-x-1.5 bg-black/40 px-2 py-0.5 rounded-full border border-white/10">
-          <span class="text-[9px] font-pixel text-zinc-400">PWR</span>
-          <button id="pwrSwitch" onclick="togglePower()" class="w-8 h-4 rounded-full bg-emerald-600 p-0.5 transition-colors focus:outline-none flex items-center justify-end" title="Power On/Off">
-            <div id="pwrKnob" class="w-3 h-3 rounded-full bg-white shadow-md"></div>
-          </button>
-        </div>
-      </div>
-
-      <div class="relative bg-zinc-950 p-2 sm:p-4 rounded-2xl border-4 border-zinc-900 shadow-[inset_0_4px_12px_rgba(0,0,0,0.9)] overflow-hidden">
-        
-        <!-- Screen Bezel Header -->
-        <div class="flex justify-between items-center text-[10px] font-tech text-zinc-500 pb-1.5 border-b border-zinc-800/80 mb-2 px-1">
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span id="screenModeText" class="text-emerald-400 tracking-wider">ACTIVE MODE: 2D QUEST WORLD</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span>IIIT GUWAHATI [CSE/B.TECH]</span>
-            <span id="liveClock" class="font-tech text-zinc-400">12:00</span>
-          </div>
-        </div>
-
-        <!-- Screen Display Surface (CRT + Glare wrapper) -->
-        <div id="screenContainer" class="relative w-full h-[360px] sm:h-[400px] bg-[#0c1410] rounded-xl overflow-hidden border border-emerald-950 crt-effect screen-glare">
-          
-          <!-- Screen Power Off State -->
-          <div id="screenOffOverlay" class="hidden absolute inset-0 bg-black z-50 flex flex-col items-center justify-center">
-            <div class="w-16 h-0.5 bg-emerald-400/80 animate-pulse"></div>
-            <p class="mt-4 font-pixel text-[10px] text-zinc-600">SYSTEM SLEEPING - FLIP PWR SWITCH</p>
-          </div>
-
-          <!-- Boot Screen Animation Screen -->
-          <div id="bootScreen" class="hidden absolute inset-0 bg-[#070b09] z-40 flex flex-col items-center justify-center p-6 text-center">
-            <div class="w-16 h-16 mb-4 relative flex items-center justify-center">
-              <i class="fa-solid fa-gamepad text-5xl text-emerald-400 animate-bounce"></i>
-            </div>
-            <h2 class="font-pixel text-base sm:text-lg text-emerald-400 mb-2 tracking-wider">PRINCE GOYAL OS</h2>
-            <p class="font-tech text-zinc-400 text-xs tracking-widest">LOADING CARTRIDGE BIOS & ROMS...</p>
-            <div class="w-48 h-2 bg-zinc-800 rounded-full mt-4 overflow-hidden border border-emerald-500/30">
-              <div id="bootBar" class="h-full bg-emerald-400 w-0 transition-all duration-700"></div>
-            </div>
-          </div>
-
-          <!-- SCREEN VIEW 1: Playable Canvas Quest Game -->
-          <div id="viewGame" class="w-full h-full relative">
-            <canvas id="gameCanvas" class="w-full h-full block bg-[#0c1310]"></canvas>
-
-            <!-- Game HUD / Floating Controls Overlay -->
-            <div class="absolute top-2 left-2 pointer-events-none flex flex-col gap-1">
-              <div class="bg-black/75 backdrop-blur-sm border border-emerald-500/40 rounded px-2 py-1 text-[10px] font-pixel text-emerald-400 flex items-center gap-2">
-                <span>XP: <span id="hudXp" class="text-retroAmber font-bold">1200</span></span>
-                <span>•</span>
-                <span>CRYSTALS: <span id="hudCrystals" class="text-cyan-400 font-bold">0/4</span></span>
-              </div>
-              <div class="bg-black/60 px-2 py-0.5 rounded text-[10px] font-tech text-zinc-300">
-                Explore map & press [A] or Enter near Terminals!
-              </div>
-            </div>
-
-            <!-- Dialogue/Interaction Popup in Game -->
-            <div id="gameDialog" class="hidden absolute bottom-3 left-3 right-3 bg-zinc-950/95 border-2 border-emerald-500 rounded-xl p-3 shadow-2xl z-30 font-pixel text-xs">
-              <div class="flex items-start justify-between gap-2">
-                <div class="flex items-center gap-2 text-emerald-400 mb-1">
-                  <i class="fa-solid fa-terminal text-sm"></i>
-                  <span id="dialogTitle" class="tracking-wide">TERMINAL ACCESS</span>
-                </div>
-                <button onclick="closeDialog()" class="text-zinc-500 hover:text-white text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded">
-                  [B] CLOSE
-                </button>
-              </div>
-              <p id="dialogContent" class="font-tech text-sm text-zinc-200 leading-snug mb-2.5">
-                Interact with the terminal to inspect Prince's projects.
-              </p>
-              <div id="dialogActions" class="flex items-center gap-2 font-tech">
-                <button id="dialogActionBtn" class="bg-emerald-500 hover:bg-emerald-400 text-black px-3 py-1 rounded text-xs font-bold transition-all">
-                  Open Dossier [A]
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- SCREEN VIEW 2: Menu / Dossier Cartridge Screens -->
-          <div id="viewCartridge" class="hidden w-full h-full bg-[#0a0f0d] p-3 sm:p-5 flex flex-col screen-scroll overflow-y-auto font-tech text-slate-200">
-            
-            <!-- Cartridge Header Nav Bar -->
-            <div class="flex items-center justify-between pb-2 mb-3 border-b border-emerald-500/30 text-xs">
-              <div class="flex items-center gap-1.5 font-pixel text-[10px] text-emerald-400">
-                <i id="cartridgeIcon" class="fa-solid fa-folder-open"></i>
-                <span id="cartridgeTitle">ROM 1: PLAYER PROFILE</span>
-              </div>
-              <button onclick="switchMode('game')" class="font-pixel text-[9px] bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-black px-2 py-1 rounded transition-colors border border-emerald-500/40">
-                RETURN TO MAP [B]
-              </button>
-            </div>
-
-            <!-- TAB CONTAINER 1: BIO & DEVELOPER RPG STATS -->
-            <div id="tabBio" class="cartridge-tab space-y-4">
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                
-                <!-- Pixel Avatar Card -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3 flex flex-col items-center text-center">
-                  <!-- Pixel portrait avatar -->
-                  <div class="w-20 h-20 bg-emerald-950 rounded-lg border-2 border-emerald-400 flex items-center justify-center relative overflow-hidden mb-2 shadow-inner">
-                    <svg class="w-16 h-16" viewBox="0 0 24 24" fill="none">
-                      <!-- Pixel head -->
-                      <rect x="7" y="5" width="10" height="9" fill="#fbbf24"/>
-                      <!-- Hair -->
-                      <rect x="6" y="3" width="12" height="3" fill="#1e293b"/>
-                      <rect x="5" y="4" width="2" height="4" fill="#1e293b"/>
-                      <!-- Eyes -->
-                      <rect x="8" y="8" width="2" height="2" fill="#0f172a"/>
-                      <rect x="14" y="8" width="2" height="2" fill="#0f172a"/>
-                      <!-- Glasses frame -->
-                      <rect x="7" y="7" width="4" height="3" fill="none" stroke="#38bdf8" stroke-width="0.8"/>
-                      <rect x="13" y="7" width="4" height="3" fill="none" stroke="#38bdf8" stroke-width="0.8"/>
-                      <rect x="11" y="8" width="2" height="0.8" fill="#38bdf8"/>
-                      <!-- Body / Hoodie -->
-                      <rect x="5" y="14" width="14" height="9" fill="#059669"/>
-                      <rect x="9" y="14" width="6" height="3" fill="#34d399"/>
-                    </svg>
-                    <span class="absolute bottom-0 right-0 bg-emerald-500 text-black text-[8px] font-pixel px-1">LVL 21</span>
-                  </div>
-                  <h3 class="font-pixel text-xs text-white">PRINCE GOYAL</h3>
-                  <p class="text-xs text-emerald-400 font-tech">IIIT Guwahati • CSE</p>
-                  <div class="mt-2 text-[11px] text-zinc-400 font-sans text-left leading-relaxed">
-                    Passionate Full-Stack Developer & problem solver building high-scale web apps, intelligent study systems, and AI-powered automation.
-                  </div>
-                </div>
-
-                <!-- Developer RPG Stats Sheet -->
-                <div class="sm:col-span-2 bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3 flex flex-col justify-between">
-                  <h4 class="font-pixel text-[10px] text-retroAmber mb-2 flex items-center justify-between">
-                    <span>DEVELOPER STAT ATTRIBUTES</span>
-                    <span class="text-zinc-500">CLASS: FULL STACK ARCHITECT</span>
-                  </h4>
-                  
-                  <div class="space-y-2 text-xs">
-                    <div>
-                      <div class="flex justify-between text-[11px] mb-0.5">
-                        <span class="text-zinc-300">SYSTEM ARCHITECTURE & SCALING</span>
-                        <span class="text-emerald-400 font-bold">92 / 100</span>
-                      </div>
-                      <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-emerald-400 h-full rounded-full" style="width: 92%"></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div class="flex justify-between text-[11px] mb-0.5">
-                        <span class="text-zinc-300">BACKEND & DATABASE (PHP / MySQL)</span>
-                        <span class="text-emerald-400 font-bold">95 / 100</span>
-                      </div>
-                      <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-emerald-400 h-full rounded-full" style="width: 95%"></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div class="flex justify-between text-[11px] mb-0.5">
-                        <span class="text-zinc-300">FRONTEND (Interactive JS / Responsive UX)</span>
-                        <span class="text-emerald-400 font-bold">90 / 100</span>
-                      </div>
-                      <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-emerald-400 h-full rounded-full" style="width: 90%"></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div class="flex justify-between text-[11px] mb-0.5">
-                        <span class="text-zinc-300">AI AGENTS & GEMINI API INTEGRATION</span>
-                        <span class="text-retroAmber font-bold">88 / 100</span>
-                      </div>
-                      <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-retroAmber h-full rounded-full" style="width: 88%"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-3 pt-2 border-t border-zinc-800 text-[11px] text-zinc-400 flex flex-wrap gap-2 items-center">
-                    <span class="text-emerald-400"><i class="fa-solid fa-graduation-cap mr-1"></i> Indian Institute of Information Technology Guwahati</span>
-                    <span>• B.Tech Computer Science & Engineering</span>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Quick Highlights Bar -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-                <div class="bg-emerald-950/40 border border-emerald-500/20 p-2 rounded-lg">
-                  <div class="font-pixel text-emerald-400 text-sm">4+</div>
-                  <div class="text-[11px] text-zinc-400">Shipped Platforms</div>
-                </div>
-                <div class="bg-emerald-950/40 border border-emerald-500/20 p-2 rounded-lg">
-                  <div class="font-pixel text-retroAmber text-sm">99.8%</div>
-                  <div class="text-[11px] text-zinc-400">Test Engine Reliability</div>
-                </div>
-                <div class="bg-emerald-950/40 border border-emerald-500/20 p-2 rounded-lg">
-                  <div class="font-pixel text-cyan-400 text-sm">Mod</div>
-                  <div class="text-[11px] text-zinc-400">r/bhindcity Lead</div>
-                </div>
-                <div class="bg-emerald-950/40 border border-emerald-500/20 p-2 rounded-lg">
-                  <div class="font-pixel text-purple-400 text-sm">AI Ready</div>
-                  <div class="text-[11px] text-zinc-400">LLM & Chrome Extensions</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB CONTAINER 2: PROJECT VAULT -->
-            <div id="tabProjects" class="cartridge-tab hidden space-y-3">
-              <div class="flex items-center justify-between text-xs text-zinc-400">
-                <span>[SELECT A CARTRIDGE MISSION BELOW]</span>
-                <span class="text-emerald-400 font-pixel text-[9px]">4 DEPLOYED ARTIFACTS</span>
-              </div>
-
-              <!-- Project Cards Grid -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                
-                <!-- Project 1: Study Guard AI Elite -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-400 rounded-xl p-3 flex flex-col justify-between transition-all group">
-                  <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <span class="font-pixel text-[10px] text-emerald-400 group-hover:text-emerald-300">STUDY GUARD AI ELITE</span>
-                      <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-tech">AI Productivity</span>
-                    </div>
-                    <p class="text-zinc-300 text-[12px] leading-relaxed mb-2 font-sans">
-                      Advanced browser extension that tracks user focus, curbs social media distractions using intelligent tab inspection, and integrates Gemini AI for instant study summaries.
-                    </p>
-                    <div class="flex flex-wrap gap-1 mb-3">
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">JavaScript</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Gemini API</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Chrome Manifest V3</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
-                    <button onclick="simulateProjectAction('Study Guard AI Elite', 'https://github.com/princegoyal')" class="text-xs text-emerald-400 hover:text-white flex items-center gap-1">
-                      <i class="fa-brands fa-github"></i> Source Code
-                    </button>
-                    <span class="text-zinc-600">•</span>
-                    <button onclick="simulateProjectInspect('Study Guard AI')" class="text-xs text-retroAmber hover:underline">
-                      Inspect Specs
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Project 2: ExamCraft -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-400 rounded-xl p-3 flex flex-col justify-between transition-all group">
-                  <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <span class="font-pixel text-[10px] text-emerald-400 group-hover:text-emerald-300">EXAMCRAFT PLATFORM</span>
-                      <span class="text-[9px] bg-retroAmber/20 text-retroAmber px-1.5 py-0.5 rounded font-tech">Full-Stack EdTech</span>
-                    </div>
-                    <p class="text-zinc-300 text-[12px] leading-relaxed mb-2 font-sans">
-                      Automated assessment generator & educational test creation suite. Features dynamic question-paper generation, syllabus mapping, and auto-grading logic.
-                    </p>
-                    <div class="flex flex-wrap gap-1 mb-3">
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">PHP</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">MySQL</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Vanilla JS</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">LaTeX Parser</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
-                    <button onclick="simulateProjectAction('ExamCraft', 'https://github.com/princegoyal')" class="text-xs text-emerald-400 hover:text-white flex items-center gap-1">
-                      <i class="fa-brands fa-github"></i> Repository
-                    </button>
-                    <span class="text-zinc-600">•</span>
-                    <button onclick="simulateProjectInspect('ExamCraft Engine')" class="text-xs text-retroAmber hover:underline">
-                      Inspect Architecture
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Project 3: CBT Mock Test Platform -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-400 rounded-xl p-3 flex flex-col justify-between transition-all group">
-                  <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <span class="font-pixel text-[10px] text-emerald-400 group-hover:text-emerald-300">CBT HIGH-CONCURRENCY</span>
-                      <span class="text-[9px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-tech">High Performance</span>
-                    </div>
-                    <p class="text-zinc-300 text-[12px] leading-relaxed mb-2 font-sans">
-                      Computer-Based Testing simulation engineered to mirror national exam engines. Built with resilient state recovery, auto-sync, and zero-latency question swapping.
-                    </p>
-                    <div class="flex flex-wrap gap-1 mb-3">
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">PHP 8</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Optimized MySQL</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Web Storage API</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
-                    <button onclick="simulateProjectAction('CBT Platform', 'https://github.com/princegoyal')" class="text-xs text-emerald-400 hover:text-white flex items-center gap-1">
-                      <i class="fa-brands fa-github"></i> Architecture
-                    </button>
-                    <span class="text-zinc-600">•</span>
-                    <button onclick="simulateProjectInspect('CBT Test System')" class="text-xs text-retroAmber hover:underline">
-                      Benchmark Specs
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Project 4: Zenith Hub & PaperPhodnaHai -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-400 rounded-xl p-3 flex flex-col justify-between transition-all group">
-                  <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <span class="font-pixel text-[10px] text-emerald-400 group-hover:text-emerald-300">ZENITH HUB & PPH</span>
-                      <span class="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-tech">Student Network</span>
-                    </div>
-                    <p class="text-zinc-300 text-[12px] leading-relaxed mb-2 font-sans">
-                      Centralized collegiate learning portal providing peer study repositories, mock entrance simulations, and automated note-distribution pipelines.
-                    </p>
-                    <div class="flex flex-wrap gap-1 mb-3">
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Full-Stack Web</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">CDN Caching</span>
-                      <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded text-[10px]">Community DB</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
-                    <button onclick="simulateProjectAction('Zenith Hub', 'https://github.com/princegoyal')" class="text-xs text-emerald-400 hover:text-white flex items-center gap-1">
-                      <i class="fa-brands fa-github"></i> Repository
-                    </button>
-                    <span class="text-zinc-600">•</span>
-                    <button onclick="simulateProjectInspect('Zenith Platform')" class="text-xs text-retroAmber hover:underline">
-                      View Metrics
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- TAB CONTAINER 3: TECH SKILL ARSENAL -->
-            <div id="tabSkills" class="cartridge-tab hidden space-y-3">
-              <div class="font-pixel text-[10px] text-emerald-400 flex items-center justify-between">
-                <span>SKILL INVENTORY & RPG EQUIPMENT TREE</span>
-                <span class="text-zinc-400 font-tech">SYSTEM: READY</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                
-                <!-- Arsenal Category 1: Languages & Core -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3">
-                  <div class="flex items-center gap-2 text-emerald-400 font-pixel text-[10px] mb-2">
-                    <i class="fa-solid fa-code text-retroAmber"></i>
-                    <span>PRIMARY WEAPONS [CORE]</span>
-                  </div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">PHP 8.x (OOP, MVC, REST APIs)</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER S</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">JavaScript (ES6+, DOM, Asynchronous)</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER S</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">C / C++ (Algorithms & Optimization)</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER A+</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">HTML5 / Modern CSS3 / Tailwind</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER S</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Arsenal Category 2: Databases & Storage -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3">
-                  <div class="flex items-center gap-2 text-cyan-400 font-pixel text-[10px] mb-2">
-                    <i class="fa-solid fa-database text-cyan-400"></i>
-                    <span>DATA RESERVOIRS [DATABASES]</span>
-                  </div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">MySQL (Schema Design, Query Tuning)</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER S</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Relational Data Modeling & ACID</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER A+</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Indexing, Foreign Keys & Normalization</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER A+</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Client Caching (IndexedDB / LocalStorage)</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">TIER A</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Arsenal Category 3: AI & Applied APIs -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3">
-                  <div class="flex items-center gap-2 text-purple-400 font-pixel text-[10px] mb-2">
-                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
-                    <span>CYBER INTELLIGENCE [AI / APIS]</span>
-                  </div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Google Gemini API / Multi-turn chats</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">MASTER</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Prompt Engineering & Structured Outputs</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">MASTER</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Chrome Extension V3 Architecture</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">EXPERT</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Arsenal Category 4: Tools & Systems -->
-                <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3">
-                  <div class="flex items-center gap-2 text-retroAmber font-pixel text-[10px] mb-2">
-                    <i class="fa-solid fa-server text-retroAmber"></i>
-                    <span>TACTICAL GEAR [DEVOPS & UTILS]</span>
-                  </div>
-                  <div class="space-y-2">
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Git, GitHub & Version Control</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">DAILY</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Linux Command Line & Server Hosting</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">ADVANCED</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/40 p-1.5 rounded border border-zinc-800">
-                      <span class="font-bold text-white">Apache / Nginx Web Servers</span>
-                      <span class="text-emerald-400 font-pixel text-[9px]">READY</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- TAB CONTAINER 4: COMMUNITY & LEADERSHIP -->
-            <div id="tabCommunity" class="cartridge-tab hidden space-y-3">
-              <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-4">
-                <div class="flex items-center gap-3 mb-3 pb-2 border-b border-zinc-800">
-                  <div class="w-10 h-10 rounded-lg bg-orange-600/20 text-orange-500 border border-orange-500/40 flex items-center justify-center text-xl">
-                    <i class="fa-brands fa-reddit-alien"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-pixel text-xs text-white">SUBREDDIT MODERATOR: r/bhindcity</h4>
-                    <p class="text-xs text-zinc-400">Community Architect & Online Community Manager</p>
-                  </div>
-                </div>
-                <p class="text-sm text-zinc-300 leading-relaxed font-sans mb-3">
-                  Leading and moderating the regional digital community of <strong>r/bhindcity</strong> on Reddit. Responsible for community growth strategies, enforcing guidelines, curating local discussions, organizing technical/educational threads, and bridging localized student questions with resources.
-                </p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                  <div class="bg-black/40 p-2 rounded border border-zinc-800">
-                    <span class="text-zinc-400 block text-[10px]">ROLE DUTIES</span>
-                    <span class="font-bold text-emerald-400">Automated Bot Rules & Safe Mod</span>
-                  </div>
-                  <div class="bg-black/40 p-2 rounded border border-zinc-800">
-                    <span class="text-zinc-400 block text-[10px]">IMPACT</span>
-                    <span class="font-bold text-emerald-400">Connecting Regional Youths & Devs</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Campus Involvement Card -->
-              <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3 text-xs">
-                <div class="flex items-center gap-2 font-pixel text-[10px] text-emerald-400 mb-1">
-                  <i class="fa-solid fa-users text-retroAmber"></i>
-                  <span>IIIT GUWAHATI CAMPUS & CODING NETWORK</span>
-                </div>
-                <p class="text-zinc-300 font-sans leading-relaxed">
-                  Actively engaged in developer hackathons, collegiate peer mentoring for programming fundamentals, and building open student-run utility web projects like Zenith Hub and PaperPhodnaHai.
-                </p>
-              </div>
-            </div>
-
-            <!-- TAB CONTAINER 5: CONNECT / COMMS TERMINAL -->
-            <div id="tabComms" class="cartridge-tab hidden space-y-3">
-              <div class="bg-zinc-900/90 border border-emerald-500/30 rounded-xl p-3 text-xs">
-                <div class="font-pixel text-[10px] text-emerald-400 mb-2 flex items-center justify-between">
-                  <span>TRANSMIT DISPATCH / CONNECT</span>
-                  <span class="text-emerald-500">ENCRYPTED 256-BIT</span>
-                </div>
-
-                <div class="space-y-2 font-tech">
-                  <div>
-                    <label class="block text-zinc-400 text-[11px] mb-0.5">SENDER FREQUENCY / YOUR NAME & EMAIL</label>
-                    <input id="senderContact" type="text" placeholder="e.g. recruit@toptech.com / Alex" class="w-full bg-black/60 border border-zinc-700 rounded px-2.5 py-1.5 text-slate-100 focus:outline-none focus:border-emerald-500 text-xs" />
-                  </div>
-                  <div>
-                    <label class="block text-zinc-400 text-[11px] mb-0.5">MESSAGE PAYLOAD</label>
-                    <textarea id="messagePayload" rows="3" placeholder="Greetings Prince! We loved Study Guard AI and want to discuss opportunities..." class="w-full bg-black/60 border border-zinc-700 rounded px-2.5 py-1.5 text-slate-100 focus:outline-none focus:border-emerald-500 text-xs"></textarea>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-2 pt-1">
-                    <button onclick="sendCommsTransmission()" class="bg-emerald-500 hover:bg-emerald-400 text-black font-pixel text-[10px] px-4 py-2 rounded transition-all flex items-center gap-2">
-                      <i class="fa-solid fa-satellite-dish"></i> TRANSMIT PACKET
-                    </button>
-                    <button onclick="copyEmailToClipboard()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-pixel text-[9px] px-3 py-2 rounded transition-all flex items-center gap-1.5">
-                      <i class="fa-regular fa-copy"></i> COPY EMAIL
-                    </button>
-                    <button onclick="downloadResumeSim()" class="bg-cyan-900/50 hover:bg-cyan-800/60 border border-cyan-500/40 text-cyan-300 font-pixel text-[9px] px-3 py-2 rounded transition-all flex items-center gap-1.5">
-                      <i class="fa-solid fa-file-arrow-down"></i> GET RESUME
-                    </button>
-                  </div>
-                  <div id="commsAlert" class="hidden text-[11px] text-emerald-400 font-tech p-1.5 bg-emerald-950/40 border border-emerald-500/30 rounded mt-2">
-                    Transmission status: OK
-                  </div>
-                </div>
-              </div>
-
-              <!-- Direct Link Radar -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-                <a href="https://github.com/princegoyal" target="_blank" rel="noopener noreferrer" class="bg-zinc-900 border border-zinc-700 hover:border-emerald-400 p-2 rounded-lg block group transition-all">
-                  <i class="fa-brands fa-github text-lg text-white group-hover:text-emerald-400 mb-1 block"></i>
-                  <span class="font-pixel text-[9px]">GitHub</span>
-                </a>
-                <a href="https://linkedin.com/in/princegoyal" target="_blank" rel="noopener noreferrer" class="bg-zinc-900 border border-zinc-700 hover:border-cyan-400 p-2 rounded-lg block group transition-all">
-                  <i class="fa-brands fa-linkedin text-lg text-cyan-400 group-hover:text-cyan-300 mb-1 block"></i>
-                  <span class="font-pixel text-[9px]">LinkedIn</span>
-                </a>
-                <a href="https://reddit.com/r/bhindcity" target="_blank" rel="noopener noreferrer" class="bg-zinc-900 border border-zinc-700 hover:border-orange-500 p-2 rounded-lg block group transition-all">
-                  <i class="fa-brands fa-reddit text-lg text-orange-500 group-hover:text-orange-400 mb-1 block"></i>
-                  <span class="font-pixel text-[9px]">r/bhindcity</span>
-                </a>
-                <button onclick="copyEmailToClipboard()" class="bg-zinc-900 border border-zinc-700 hover:border-retroAmber p-2 rounded-lg block group transition-all text-left sm:text-center w-full">
-                  <i class="fa-solid fa-envelope text-lg text-retroAmber group-hover:text-amber-300 mb-1 block text-center"></i>
-                  <span class="font-pixel text-[9px] block text-center">Direct Mail</span>
-                </button>
-              </div>
-            </div>
-
-          </div> <!-- End Screen View Cartridge -->
-
-        </div> <!-- End Screen Container -->
-
-        <!-- Speaker Grille Holes and Console Brand Footprint -->
-        <div class="flex items-center justify-between mt-2.5 px-3">
-          <div class="w-16 h-4 speaker-grid opacity-60"></div>
-          <div class="text-[9px] font-pixel text-zinc-500 tracking-wider">
-            NINTENDO-CORE ARCHITECTURE // 2026 EDITION
-          </div>
-          <div class="w-16 h-4 speaker-grid opacity-60"></div>
-        </div>
-
-      </div> <!-- End Screen Bezel Outer Frame -->
-
-      <div class="mt-4 sm:mt-6 grid grid-cols-12 items-center gap-2 select-none">
-        
-        <!-- LEFT: Tactile D-PAD Controller -->
-        <div class="col-span-5 sm:col-span-4 flex items-center justify-center">
-          <div class="relative w-28 h-28 sm:w-32 sm:h-32">
-            <!-- Center Pivot Cover -->
-            <div class="absolute inset-0 m-auto w-7 h-7 bg-zinc-800 rounded-full shadow-inner z-10 pointer-events-none border border-zinc-700"></div>
-
-            <!-- Up Arrow -->
-            <button id="btnDpadUp" onclick="dpadPress('up')" class="tactile-btn absolute top-0 left-1/2 -translate-x-1/2 w-9 h-11 bg-zinc-900 text-zinc-400 rounded-t-lg shadow-dpad border-t border-x border-zinc-700 flex items-start justify-center pt-1 active:bg-zinc-800">
-              <i class="fa-solid fa-caret-up text-xs"></i>
-            </button>
-            <!-- Down Arrow -->
-            <button id="btnDpadDown" onclick="dpadPress('down')" class="tactile-btn absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-11 bg-zinc-900 text-zinc-400 rounded-b-lg shadow-dpad border-b border-x border-zinc-700 flex items-end justify-center pb-1 active:bg-zinc-800">
-              <i class="fa-solid fa-caret-down text-xs"></i>
-            </button>
-            <!-- Left Arrow -->
-            <button id="btnDpadLeft" onclick="dpadPress('left')" class="tactile-btn absolute left-0 top-1/2 -translate-y-1/2 w-11 h-9 bg-zinc-900 text-zinc-400 rounded-l-lg shadow-dpad border-l border-y border-zinc-700 flex items-center justify-start pl-1 active:bg-zinc-800">
-              <i class="fa-solid fa-caret-left text-xs"></i>
-            </button>
-            <!-- Right Arrow -->
-            <button id="btnDpadRight" onclick="dpadPress('right')" class="tactile-btn absolute right-0 top-1/2 -translate-y-1/2 w-11 h-9 bg-zinc-900 text-zinc-400 rounded-r-lg shadow-dpad border-r border-y border-zinc-700 flex items-center justify-end pr-1 active:bg-zinc-800">
-              <i class="fa-solid fa-caret-right text-xs"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- CENTER: Select & Start Buttons + Cartridge Selector Switch -->
-        <div class="col-span-2 sm:col-span-4 flex flex-col items-center justify-center gap-3">
-          
-          <!-- Quick Cartridge Switch Dial Buttons (Desktop/Tablet quick jump) -->
-          <div class="hidden sm:flex items-center gap-1 bg-black/60 p-1 rounded-full border border-white/10">
-            <button onclick="openCartridgeTab('tabBio', 'PLAYER STATS & BIO')" class="px-2 py-0.5 rounded-full text-[9px] font-pixel text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 transition-colors" title="Bio">ROM1</button>
-            <button onclick="openCartridgeTab('tabProjects', 'PROJECT VAULT')" class="px-2 py-0.5 rounded-full text-[9px] font-pixel text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 transition-colors" title="Projects">ROM2</button>
-            <button onclick="openCartridgeTab('tabSkills', 'TECH SKILL ARSENAL')" class="px-2 py-0.5 rounded-full text-[9px] font-pixel text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 transition-colors" title="Skills">ROM3</button>
-            <button onclick="openCartridgeTab('tabCommunity', 'COMMUNITY LEADERSHIP')" class="px-2 py-0.5 rounded-full text-[9px] font-pixel text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 transition-colors" title="Reddit/Community">ROM4</button>
-            <button onclick="openCartridgeTab('tabComms', 'TRANSMISSION / CONTACT')" class="px-2 py-0.5 rounded-full text-[9px] font-pixel text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800 transition-colors" title="Contact">ROM5</button>
-          </div>
-
-          <!-- Rubber pill Select & Start Buttons -->
-          <div class="flex items-center justify-center gap-4 rotate-[-20deg]">
-            <div class="flex flex-col items-center">
-              <button id="btnSelect" onclick="pressSelect()" class="tactile-btn w-9 sm:w-11 h-3.5 bg-zinc-800 rounded-full shadow-md border border-zinc-700 active:bg-zinc-900" title="Select / Map Mode"></button>
-              <span class="text-[8px] font-pixel text-zinc-400 mt-1 uppercase">SELECT</span>
-            </div>
-            <div class="flex flex-col items-center">
-              <button id="btnStart" onclick="pressStart()" class="tactile-btn w-9 sm:w-11 h-3.5 bg-zinc-800 rounded-full shadow-md border border-zinc-700 active:bg-zinc-900" title="Start / Main Menu"></button>
-              <span class="text-[8px] font-pixel text-zinc-400 mt-1 uppercase">START</span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- RIGHT: Tactile A, B, X, Y Action Buttons -->
-        <div class="col-span-5 sm:col-span-4 flex items-center justify-center">
-          <div class="relative w-28 h-28 sm:w-32 sm:h-32 rotate-[25deg]">
-            <!-- Button B (Red/Pinkish) -->
-            <div class="absolute bottom-1 left-2 flex flex-col items-center">
-              <button id="btnB" onclick="pressButtonB()" class="tactile-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-rose-700 hover:bg-rose-600 text-white font-pixel text-xs shadow-btn active:bg-rose-800 border-t border-rose-400 flex items-center justify-center">
-                B
-              </button>
-            </div>
-
-            <!-- Button A (Cyan/Blueish) -->
-            <div class="absolute top-1 right-2 flex flex-col items-center">
-              <button id="btnA" onclick="pressButtonA()" class="tactile-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-pixel text-xs shadow-btn active:bg-emerald-700 border-t border-emerald-300 flex items-center justify-center">
-                A
-              </button>
-            </div>
-
-            <!-- Button Y (Yellow/Gold) -->
-            <div class="absolute top-1 left-2 flex flex-col items-center">
-              <button id="btnY" onclick="pressButtonY()" class="tactile-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-amber-600 hover:bg-amber-500 text-white font-pixel text-[10px] shadow-btn active:bg-amber-700 border-t border-amber-300 flex items-center justify-center">
-                Y
-              </button>
-            </div>
-
-            <!-- Button X (Purple) -->
-            <div class="absolute bottom-1 right-2 flex flex-col items-center">
-              <button id="btnX" onclick="pressButtonX()" class="tactile-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-700 hover:bg-indigo-600 text-white font-pixel text-[10px] shadow-btn active:bg-indigo-800 border-t border-indigo-400 flex items-center justify-center">
-                X
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div> <!-- End Physical Controls -->
-
-      <!-- Hardware Bottom Grip / Headphone Jack & Volume Simulation -->
-      <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-zinc-500 font-tech px-2">
-        <div class="flex items-center gap-1.5">
-          <i class="fa-solid fa-headphones"></i>
-          <span>PHONES</span>
-          <div class="w-3 h-3 rounded-full bg-black border border-zinc-700 inline-block ml-1"></div>
-        </div>
-        <div class="text-[9px] text-zinc-400 font-pixel hidden sm:inline">
-          KEYBOARD: [ARROWS/WASD] MOVE • [Z/ENTER] A • [X/ESC] B
-        </div>
-        <div class="flex items-center gap-1">
-          <span>VOL</span>
-          <div class="w-8 h-2 bg-zinc-900 border border-zinc-700 rounded-full overflow-hidden">
-            <div class="w-3/4 h-full bg-emerald-500"></div>
-          </div>
-        </div>
-      </div>
-
-    </div> <!-- End Console Shell -->
-  </main>
-
-  <script>
-    // Web Audio Synthesizer Class (Zero external audio assets)
-    class RetroAudioEngine {
-      constructor() {
-        this.ctx = null;
-        this.isMuted = true;
-        this.bgmTimer = null;
-        this.notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
-      }
-
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AudioContext();
-        }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-      }
-
-      playTone(freq, type = 'square', duration = 0.08, vol = 0.1) {
-        if (this.isMuted) return;
-        try {
-          this.init();
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start();
-          osc.stop(this.ctx.currentTime + duration);
-        } catch (e) {
-          // Audio blocked or context error
-        }
-      }
-
-      // Sound FX Presets
-      btnChirp() {
-        this.playTone(587.33, 'triangle', 0.05, 0.15); // D5
-      }
-
-      menuBlip() {
-        this.playTone(880, 'square', 0.04, 0.12);
-      }
-
-      crystalCollect() {
-        this.playTone(523.25, 'triangle', 0.06, 0.2); // C5
-        setTimeout(() => this.playTone(659.25, 'square', 0.08, 0.2), 60); // E5
-        setTimeout(() => this.playTone(783.99, 'square', 0.12, 0.25), 120); // G5
-        setTimeout(() => this.playTone(1046.50, 'triangle', 0.18, 0.2), 180); // C6
-      }
-
-      bootJingle() {
-        this.playTone(440, 'sine', 0.12, 0.2);
-        setTimeout(() => this.playTone(554.37, 'sine', 0.12, 0.2), 130);
-        setTimeout(() => this.playTone(659.25, 'sine', 0.25, 0.25), 260);
-      }
-
-      cancelBoop() {
-        this.playTone(220, 'sawtooth', 0.1, 0.15);
-      }
-
-      // Lightweight 8-bit algorithmic chiptune background loop
-      startBgmLoop() {
-        if (this.bgmTimer) return;
-        let step = 0;
-        const melody = [
-          { f: 329.63, d: 0.1 }, { f: 329.63, d: 0.1 }, { f: 0, d: 0.1 }, { f: 329.63, d: 0.1 },
-          { f: 0, d: 0.1 }, { f: 261.63, d: 0.1 }, { f: 329.63, d: 0.15 }, { f: 392.00, d: 0.2 },
-          { f: 0, d: 0.2 }, { f: 196.00, d: 0.25 }
-        ];
-
-        this.bgmTimer = setInterval(() => {
-          if (this.isMuted) return;
-          const note = melody[step % melody.length];
-          if (note.f > 0) {
-            this.playTone(note.f, 'triangle', note.d, 0.06);
-          }
-          step++;
-        }, 220);
-      }
-
-      stopBgmLoop() {
-        if (this.bgmTimer) {
-          clearInterval(this.bgmTimer);
-          this.bgmTimer = null;
-        }
-      }
-    }
-
-    const sound = new RetroAudioEngine();
-  </script>
-
-  <script>
-    // Game World Engine
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let currentMode = 'game'; // 'game' | 'cartridge'
-    let isPoweredOn = true;
-    let scanlinesEnabled = true;
-
-    // Resizing & Scaling Canvas with Device Pixel Ratio
-    function resizeCanvas() {
-      const container = document.getElementById('screenContainer');
-      const rect = container.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-    window.addEventListener('resize', resizeCanvas);
-
-    // Player Sprite State
-    const player = {
-      x: 100,
-      y: 120,
-      size: 20,
-      speed: 3.2,
-      vx: 0,
-      vy: 0,
-      facing: 'down',
-      animStep: 0,
-      crystalsFound: 0,
-      xp: 1200
-    };
-
-    // Interactive Terminals & Items in Map
-    const mapItems = [
-      { id: 'term-bio', x: 70, y: 60, type: 'terminal', label: 'BIO TERMINAL', icon: '👤', tab: 'tabBio', title: 'PLAYER STATS' },
-      { id: 'term-projects', x: 280, y: 70, type: 'terminal', label: 'PROJECT VAULT', icon: '🚀', tab: 'tabProjects', title: 'PROJECT VAULT' },
-      { id: 'term-skills', x: 80, y: 260, type: 'terminal', label: 'TECH ARSENAL', icon: '⚡', tab: 'tabSkills', title: 'TECH ARSENAL' },
-      { id: 'term-community', x: 310, y: 250, type: 'terminal', label: 'REDDIT & MODS', icon: '🌐', tab: 'tabCommunity', title: 'COMMUNITY & MODS' },
-      { id: 'c1', x: 180, y: 110, type: 'crystal', collected: false, xpVal: 150, name: 'PHP/MySQL Crystal' },
-      { id: 'c2', x: 220, y: 190, type: 'crystal', collected: false, xpVal: 200, name: 'Gemini AI Shard' },
-      { id: 'c3', x: 130, y: 180, type: 'crystal', collected: false, xpVal: 150, name: 'IIIT Guwahati Honor' },
-      { id: 'c4', x: 350, y: 160, type: 'crystal', collected: false, xpVal: 250, name: 'Full-Stack Relic' },
-    ];
-
-    let nearbyTarget = null;
-
-    // Movement Input Handlers
-    const keys = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    };
-
-    window.addEventListener('keydown', (e) => {
-      if (!isPoweredOn) return;
-      
-      // Prevent scrolling for navigation keys
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-        e.preventDefault();
-      }
-
-      if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') { keys.up = true; player.facing = 'up'; }
-      if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') { keys.down = true; player.facing = 'down'; }
-      if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { keys.left = true; player.facing = 'left'; }
-      if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { keys.right = true; player.facing = 'right'; }
-
-      if (e.key.toLowerCase() === 'z' || e.key === 'Enter') pressButtonA();
-      if (e.key.toLowerCase() === 'x' || e.key === 'Escape') pressButtonB();
-      
-      checkKonami(e.key);
-    });
-
-    window.addEventListener('keyup', (e) => {
-      if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') keys.up = false;
-      if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') keys.down = false;
-      if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') keys.left = false;
-      if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') keys.right = false;
-    });
-
-    function updateGame() {
-      if (currentMode !== 'game' || !isPoweredOn) return;
-
-      // Position update
-      let moving = false;
-      if (keys.up && player.y > 20) { player.y -= player.speed; moving = true; }
-      if (keys.down && player.y < canvas.height - 35) { player.y += player.speed; moving = true; }
-      if (keys.left && player.x > 20) { player.x -= player.speed; moving = true; }
-      if (keys.right && player.x < canvas.width - 35) { player.x += player.speed; moving = true; }
-
-      if (moving) {
-        player.animStep = (player.animStep + 0.15) % 4;
-      }
-
-      // Check proximity with crystals and terminals
-      nearbyTarget = null;
-      for (const item of mapItems) {
-        const dx = (player.x + 10) - item.x;
-        const dy = (player.y + 10) - item.y;
-        const dist = Math.hypot(dx, dy);
-
-        // Auto pickup crystals
-        if (item.type === 'crystal' && !item.collected && dist < 24) {
-          item.collected = true;
-          player.crystalsFound++;
-          player.xp += item.xpVal;
-          document.getElementById('hudCrystals').textContent = `${player.crystalsFound}/4`;
-          document.getElementById('hudXp').textContent = player.xp;
-          sound.crystalCollect();
-          showGameNotice(`+${item.xpVal} XP: Discovered ${item.name}!`);
-        }
-
-        // Near terminal
-        if (item.type === 'terminal' && dist < 36) {
-          nearbyTarget = item;
-        }
-      }
-
-      // Update interaction banner
-      const dialog = document.getElementById('gameDialog');
-      if (nearbyTarget) {
-        dialog.classList.remove('hidden');
-        document.getElementById('dialogTitle').textContent = nearbyTarget.label;
-        document.getElementById('dialogContent').textContent = `Interact to inspect Prince's ${nearbyTarget.title}. Press [A] or Enter.`;
-        document.getElementById('dialogActionBtn').onclick = () => {
-          openCartridgeTab(nearbyTarget.tab, nearbyTarget.title);
-        };
-      } else {
-        if (!dialog.classList.contains('manually-opened')) {
-          dialog.classList.add('hidden');
-        }
-      }
-    }
-
-    // Render Canvas Frame
-    function drawGame() {
-      if (currentMode !== 'game' || !isPoweredOn) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Floor tiles grid
-      const tileSize = 32;
-      for (let x = 0; x < canvas.width; x += tileSize) {
-        for (let y = 0; y < canvas.height; y += tileSize) {
-          const isAlt = ((x / tileSize) + (y / tileSize)) % 2 === 0;
-          ctx.fillStyle = isAlt ? '#0e1713' : '#0b130f';
-          ctx.fillRect(x, y, tileSize, tileSize);
-          ctx.strokeStyle = '#12241b';
-          ctx.strokeRect(x, y, tileSize, tileSize);
-        }
-      }
-
-      // Draw Pathways / Circuit lines
-      ctx.strokeStyle = '#1c3d2e';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(80, 80);
-      ctx.lineTo(290, 80);
-      ctx.lineTo(290, 260);
-      ctx.lineTo(90, 260);
-      ctx.closePath();
-      ctx.stroke();
-
-      // Render Map Entities (Terminals & Crystals)
-      for (const item of mapItems) {
-        if (item.type === 'terminal') {
-          // Terminal base platform
-          ctx.fillStyle = '#064e3b';
-          ctx.beginPath();
-          ctx.arc(item.x, item.y + 4, 18, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Terminal console body
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(item.x - 14, item.y - 14, 28, 24);
-          ctx.strokeStyle = '#34d399';
-          ctx.lineWidth = 1.5;
-          ctx.strokeRect(item.x - 14, item.y - 14, 28, 24);
-
-          // Glowing Screen
-          ctx.fillStyle = '#10b981';
-          ctx.fillRect(item.x - 10, item.y - 10, 20, 12);
-
-          // Label
-          ctx.fillStyle = '#a7f3d0';
-          ctx.font = '8px "Press Start 2P"';
-          ctx.textAlign = 'center';
-          ctx.fillText(item.label.split(' ')[0], item.x, item.y + 26);
-        } else if (item.type === 'crystal' && !item.collected) {
-          // Floating animated crystal
-          const hover = Math.sin(Date.now() / 200 + item.x) * 4;
-          const py = item.y + hover;
-
-          ctx.fillStyle = '#38bdf8';
-          ctx.beginPath();
-          ctx.moveTo(item.x, py - 10);
-          ctx.lineTo(item.x + 8, py);
-          ctx.lineTo(item.x, py + 10);
-          ctx.lineTo(item.x - 8, py);
-          ctx.closePath();
-          ctx.fill();
-
-          // Sparkle outline
-          ctx.strokeStyle = '#e0f2fe';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-        }
-      }
-
-      // Draw Prince Pixel Character Sprite
-      drawPlayerSprite(player.x, player.y, player.facing, Math.floor(player.animStep));
-
-      // Draw Proximity indicator if near an active point
-      if (nearbyTarget) {
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = '9px "Press Start 2P"';
-        ctx.textAlign = 'center';
-        ctx.fillText('[A] INSPECT', player.x + 10, player.y - 12);
-      }
-    }
-
-    // Procedural 2D Pixel Character Drawer
-    function drawPlayerSprite(x, y, facing, frame) {
-      ctx.save();
-      // Drop shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
-      ctx.beginPath();
-      ctx.ellipse(x + 10, y + 20, 8, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Body (Green Tech Hoodie)
-      ctx.fillStyle = '#059669';
-      ctx.fillRect(x + 4, y + 8, 12, 10);
-
-      // Head (Skin tone)
-      ctx.fillStyle = '#fde047';
-      ctx.fillRect(x + 5, y, 10, 8);
-
-      // Glasses & Hair
-      ctx.fillStyle = '#1e293b'; // Dark hair
-      ctx.fillRect(x + 4, y - 2, 12, 4);
-
-      ctx.fillStyle = '#0284c7'; // Glasses frame
-      if (facing === 'down') {
-        ctx.fillRect(x + 6, y + 3, 3, 2);
-        ctx.fillRect(x + 11, y + 3, 3, 2);
-      } else if (facing === 'left') {
-        ctx.fillRect(x + 5, y + 3, 3, 2);
-      } else if (facing === 'right') {
-        ctx.fillRect(x + 12, y + 3, 3, 2);
-      }
-
-      // Animated Feet
-      ctx.fillStyle = '#334155';
-      const offset = (frame % 2 === 0) ? 2 : -2;
-      ctx.fillRect(x + 5 + offset, y + 18, 4, 4);
-      ctx.fillRect(x + 11 - offset, y + 18, 4, 4);
-
-      ctx.restore();
-    }
-
-    function gameLoop() {
-      updateGame();
-      drawGame();
-      requestAnimationFrame(gameLoop);
-    }
-
-    function switchMode(newMode) {
-      currentMode = newMode;
-      sound.menuBlip();
-      const gameView = document.getElementById('viewGame');
-      const cartView = document.getElementById('viewCartridge');
-      const modeText = document.getElementById('screenModeText');
-
-      if (newMode === 'game') {
-        gameView.classList.remove('hidden');
-        cartView.classList.add('hidden');
-        modeText.textContent = 'ACTIVE MODE: 2D QUEST WORLD';
-        resizeCanvas();
-      } else {
-        gameView.classList.add('hidden');
-        cartView.classList.remove('hidden');
-        modeText.textContent = 'ACTIVE MODE: CARTRIDGE DOSSIER';
-      }
-    }
-
-    function openCartridgeTab(tabId, title) {
-      switchMode('cartridge');
-      document.getElementById('cartridgeTitle').textContent = `ROM: ${title}`;
-      
-      const tabs = document.querySelectorAll('.cartridge-tab');
-      tabs.forEach(t => t.classList.add('hidden'));
-
-      const target = document.getElementById(tabId);
-      if (target) {
-        target.classList.remove('hidden');
-      }
-      sound.crystalCollect();
-    }
-
-    function closeDialog() {
-      sound.cancelBoop();
-      const dialog = document.getElementById('gameDialog');
-      dialog.classList.add('hidden');
-      dialog.classList.remove('manually-opened');
-    }
-
-    function showGameNotice(msg) {
-      const dialog = document.getElementById('gameDialog');
-      dialog.classList.remove('hidden');
-      dialog.classList.add('manually-opened');
-      document.getElementById('dialogTitle').textContent = 'SYSTEM LOG';
-      document.getElementById('dialogContent').textContent = msg;
-      document.getElementById('dialogActionBtn').onclick = () => closeDialog();
-      document.getElementById('dialogActionBtn').textContent = 'Acknowledge [A]';
-    }
-
-    // Hardware Shell Skins
-    function setTheme(skin) {
-      sound.btnChirp();
-      const shell = document.getElementById('consoleShell');
-      shell.className = 'rounded-[32px] sm:rounded-[42px] p-4 sm:p-7 relative transition-all duration-500';
-      if (skin === 'atomic') shell.classList.add('theme-atomic');
-      if (skin === 'classic') shell.classList.add('theme-classic');
-      if (skin === 'cyber') shell.classList.add('theme-cyber');
-      if (skin === 'stealth') shell.classList.add('theme-stealth');
-    }
-
-    // CRT Scanline Filter Toggle
-    function toggleScanlines() {
-      sound.btnChirp();
-      scanlinesEnabled = !scanlinesEnabled;
-      const screen = document.getElementById('screenContainer');
-      const status = document.getElementById('crtStatus');
-      if (scanlinesEnabled) {
-        screen.classList.add('crt-effect');
-        status.textContent = 'ON';
-      } else {
-        screen.classList.remove('crt-effect');
-        status.textContent = 'OFF';
-      }
-    }
-
-    // Audio BGM Toggle
-    function toggleBgm() {
-      sound.init();
-      sound.isMuted = !sound.isMuted;
-      const soundStatus = document.getElementById('soundStatus');
-      const soundIcon = document.getElementById('soundIcon');
-
-      if (!sound.isMuted) {
-        soundStatus.textContent = 'PLAYING';
-        soundIcon.className = 'fa-solid fa-volume-high text-[10px] text-retroAmber';
-        sound.startBgmLoop();
-        sound.crystalCollect();
-      } else {
-        soundStatus.textContent = 'MUTED';
-        soundIcon.className = 'fa-solid fa-volume-xmark text-[10px]';
-        sound.stopBgmLoop();
-      }
-    }
-
-    // Power Switch (Boot Animation simulation)
-    function togglePower() {
-      sound.init();
-      isPoweredOn = !isPoweredOn;
-      const overlay = document.getElementById('screenOffOverlay');
-      const boot = document.getElementById('bootScreen');
-      const knob = document.getElementById('pwrKnob');
-      const sw = document.getElementById('pwrSwitch');
-      const pwrLed = document.getElementById('powerLed');
-
-      if (!isPoweredOn) {
-        sound.cancelBoop();
-        overlay.classList.remove('hidden');
-        boot.classList.add('hidden');
-        sw.classList.replace('justify-end', 'justify-start');
-        sw.classList.replace('bg-emerald-600', 'bg-zinc-800');
-        pwrLed.classList.replace('bg-emerald-400', 'bg-rose-800');
-        pwrLed.classList.remove('led-glow');
-      } else {
-        overlay.classList.add('hidden');
-        sw.classList.replace('justify-start', 'justify-end');
-        sw.classList.replace('bg-zinc-800', 'bg-emerald-600');
-        pwrLed.classList.replace('bg-rose-800', 'bg-emerald-400');
-        pwrLed.classList.add('led-glow');
-
-        // Play boot sequence
-        boot.classList.remove('hidden');
-        const bootBar = document.getElementById('bootBar');
-        bootBar.style.width = '0%';
-        sound.bootJingle();
-
-        setTimeout(() => { bootBar.style.width = '100%'; }, 50);
-        setTimeout(() => {
-          boot.classList.add('hidden');
-          switchMode('game');
-        }, 850);
-      }
-    }
-
-    function dpadPress(dir) {
-      if (!isPoweredOn) return;
-      sound.btnChirp();
-      keys[dir] = true;
-      if (dir === 'up') player.facing = 'up';
-      if (dir === 'down') player.facing = 'down';
-      if (dir === 'left') player.facing = 'left';
-      if (dir === 'right') player.facing = 'right';
-
-      setTimeout(() => { keys[dir] = false; }, 120);
-    }
-
-    function pressButtonA() {
-      if (!isPoweredOn) return;
-      sound.btnChirp();
-      
-      // If near a target in game mode, open its tab
-      if (currentMode === 'game' && nearbyTarget) {
-        openCartridgeTab(nearbyTarget.tab, nearbyTarget.title);
-        return;
-      }
-      
-      // If dialogue is visible, acknowledge it
-      const dialog = document.getElementById('gameDialog');
-      if (!dialog.classList.contains('hidden')) {
-        const actionBtn = document.getElementById('dialogActionBtn');
-        if (actionBtn) actionBtn.click();
-      }
-    }
-
-    function pressButtonB() {
-      if (!isPoweredOn) return;
-      sound.cancelBoop();
-      if (currentMode === 'cartridge') {
-        switchMode('game');
-      } else {
-        closeDialog();
-      }
-    }
-
-    function pressButtonX() {
-      if (!isPoweredOn) return;
-      sound.menuBlip();
-      openCartridgeTab('tabSkills', 'TECH SKILL ARSENAL');
-    }
-
-    function pressButtonY() {
-      if (!isPoweredOn) return;
-      sound.menuBlip();
-      openCartridgeTab('tabProjects', 'PROJECT VAULT');
-    }
-
-    function pressSelect() {
-      if (!isPoweredOn) return;
-      sound.menuBlip();
-      switchMode('game');
-    }
-
-    function pressStart() {
-      if (!isPoweredOn) return;
-      sound.bootJingle();
-      if (currentMode === 'game') {
-        openCartridgeTab('tabBio', 'PLAYER STATS & BIO');
-      } else {
-        switchMode('game');
-      }
-    }
-
-    function pressTrigger(side) {
-      if (!isPoweredOn) return;
-      sound.btnChirp();
-      const tabOrder = ['tabBio', 'tabProjects', 'tabSkills', 'tabCommunity', 'tabComms'];
-      const tabNames = ['PLAYER STATS & BIO', 'PROJECT VAULT', 'TECH SKILL ARSENAL', 'COMMUNITY & MODS', 'TRANSMISSION / CONTACT'];
-
-      // Find active index
-      let activeIdx = 0;
-      tabOrder.forEach((t, i) => {
-        if (!document.getElementById(t).classList.contains('hidden')) activeIdx = i;
-      });
-
-      if (side === 'R') {
-        activeIdx = (activeIdx + 1) % tabOrder.length;
-      } else {
-        activeIdx = (activeIdx - 1 + tabOrder.length) % tabOrder.length;
-      }
-
-      openCartridgeTab(tabOrder[activeIdx], tabNames[activeIdx]);
-    }
-
-    // Comms Form Transmission Simulation
-    function sendCommsTransmission() {
-      const contact = document.getElementById('senderContact').value.trim();
-      const message = document.getElementById('messagePayload').value.trim();
-      const alert = document.getElementById('commsAlert');
-
-      if (!contact || !message) {
-        sound.cancelBoop();
-        alert.classList.remove('hidden');
-        alert.textContent = 'ERROR: Contact and message packet payload required!';
-        alert.className = 'text-[11px] text-rose-400 font-tech p-1.5 bg-rose-950/40 border border-rose-500/30 rounded mt-2';
-        return;
-      }
-
-      sound.crystalCollect();
-      alert.classList.remove('hidden');
-      alert.textContent = `Transmission dispatched to Prince Goyal! (Sender: ${contact})`;
-      alert.className = 'text-[11px] text-emerald-400 font-tech p-1.5 bg-emerald-950/40 border border-emerald-500/30 rounded mt-2';
-
-      document.getElementById('senderContact').value = '';
-      document.getElementById('messagePayload').value = '';
-    }
-
-    function copyEmailToClipboard() {
-      sound.crystalCollect();
-      const email = 'prince.goyal.dev@iiitg.ac.in';
-      const tempInput = document.createElement('input');
-      tempInput.value = email;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      try {
-        document.execCommand('copy');
-        showGameNotice(`Prince's direct email copied to clipboard: ${email}`);
-      } catch (e) {
-        showGameNotice(`Prince's direct email: ${email}`);
-      }
-      document.body.removeChild(tempInput);
-    }
-
-    function downloadResumeSim() {
-      sound.crystalCollect();
-      showGameNotice('Fetching Prince Goyal Resume [PDF Protocol Ready]. Open in viewer or connected tabs.');
-    }
-
-    function simulateProjectAction(name, link) {
-      sound.menuBlip();
-      window.open(link, '_blank');
-    }
-
-    function simulateProjectInspect(name) {
-      sound.btnChirp();
-      showGameNotice(`[SYSTEM TELEMETRY]: ${name} is engineered with high-efficiency async pipes and robust server validation.`);
-    }
-
-    // Konami Code Easter Egg (Up Up Down Down Left Right Left Right B A)
-    const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let konamiIndex = 0;
-
-    function checkKonami(key) {
-      if (key.toLowerCase() === konamiSequence[konamiIndex].toLowerCase()) {
-        konamiIndex++;
-        if (konamiIndex === konamiSequence.length) {
-          konamiIndex = 0;
-          sound.crystalCollect();
-          player.xp += 9999;
-          document.getElementById('hudXp').textContent = player.xp;
-          setTheme('cyber');
-          showGameNotice('✨ CHEAT UNLOCKED: +9999 XP & CYBER MATRIX THEME ENGAGED!');
-        }
-      } else {
-        konamiIndex = 0;
-      }
-    }
-
-    // Clock Updater
-    function updateClock() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const clockEl = document.getElementById('liveClock');
-      if (clockEl) clockEl.textContent = timeStr;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Kickstart game on load
-    window.onload = function() {
-      resizeCanvas();
-      gameLoop();
-    };
-  </script>
+<body>
+<div id="post" role="status" aria-label="Boot sequence. Press any key to continue."></div>
+
+<div id="bios" hidden>
+ <div class="title">Prince Goyal Setup Utility - Copyright (C) 2026</div>
+ <div class="tabs" id="tabs" role="tablist"></div>
+ <div class="main">
+  <div class="pane" id="list" role="listbox" tabindex="0" aria-label="Settings"></div>
+  <div class="pane help"><h2>Item Specific Help</h2><div id="help" aria-live="polite"></div>
+   <div class="keys">Tip: use the arrow keys, Enter opens links, Esc jumps to Exit.</div></div>
+ </div>
+ <div class="leg" id="leg">
+  <button data-a="left"><b>←→</b> Select Screen</button><button data-a="up"><b>↑</b></button><button data-a="down"><b>↓</b> Select Item</button>
+  <button data-a="enter"><b>Enter</b> Select</button><button data-a="esc"><b>Esc</b> Exit</button><button data-a="f10"><b>F10</b> Save &amp; Exit</button>
+ </div>
+ <div id="dlg"><div class="box"><div>Save configuration changes and exit now?</div><div class="btns"><button id="y" class="on">[ Yes ]</button><button id="n">[ No ]</button></div></div></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const tabs=[
+ {n:'Main',t:'System Information',items:[
+  {l:'User',v:'prince goyal',h:'Primary user of this system.'},
+  {l:'Role',v:'Full stack web dev | Systems Architect',h:'Engineers high-performance web solutions and deploys intelligent, multi-modal AI agents for custom software.'},
+  {l:'Degree',v:'B.Tech ECE',h:'Bachelor of Technology in Electronics & Communication and Engineering.'},
+  {l:'University',v:'IIIT Guwahati',h:'Indian Institute of Information Technology, Guwahati.'},
+  {l:'Focus',v:'High-Performance Web & AI Agents',h:'Deploying intelligent, AI-powered system agents (Gemini API / NotebookLM) within high-performance web environments.'},
+  {l:'Quote',v:'"Talk is cheap. Show me the code."',h:'""Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it." — Brian Kernighan"'},
+  {l:'System Time',v:'',live:1,h:'Live system clock. Not user-adjustable.'}]},
+ {n:'Skills',t:'Runtime Configuration',items:[
+  {l:'PHP_8.x',v:'[Expert]',h:'Backend routing and request handling, written with strict types.'},
+  {l:'MYSQL',v:'[Expert]',h:'Schema design and compound B-Tree indexing tuned to real query patterns.'},
+  {l:'JS_ES6',v:'[Expert]',h:'Vanilla JavaScript with a solid model of the event loop. No framework weight.'},
+  {l:'GEMINI_API',v:'[Advanced]',h:'AI agents built on the Gemini API, with structured outputs and tool use.'},
+  {l:'Python',v:'[Intermediate]',h:'System automation and machine learning integrations, written for fast execution and data handling.'},
+  {l:'C/C++',v:'[Intermediate]',h:'Core algorithms and competitive problem solving, focusing on raw execution speed and memory control.'}]},
+ {n:'Boot',t:'Boot Priority (Projects)',items:[
+  {l:'1st Boot Device',v:'Cinestream',href:'https://byprince.me/cinestream',h:'Immersive media sync platform for watching together.<br><br>byprince.me/cinestream'},
+  {l:'2nd Boot Device',v:'Zenith Hub',href:'https://zenithhub.kesug.com',h:'JEE prep hub with a college predictor.<br><br>zenithhub.kesug.com'},
+  {l:'3rd Boot Device',v:'DropQR',href:'https://byprince.me/dropqr',h:'Fast, self-expiring cross-device file transfer via QR.<br><br>byprince.me/dropqr'},
+  {l:'4th Boot Device',v:'URL Shortener',href:'https://byprince.me/shortener',h:'High-speed root-level redirect engine with custom slugs.<br><br>byprince.me/shortener'},
+  {l:'5th Boot Device',v:'ExamCraft',href:'https://zenithhub.kesug.com/examcraft/index.php',h:'Advanced assessment architect for building and running exams.<br><br>examcraft.byprince.me'},
+  {l:'M.2 Device',v:'School Management Software',h:'Comprehensive administrative suite for institutional operations.'},
+     {l:'M.2 Device',v:'Study Guard AI Elite',h:'Chrome MV3 extension that uses AI to block distractions.'}]},
+ {n:'Monitor',t:'PCH_COMMAND (Restricted)',items:[
+  {l:'Systems Command',v:'/admin',h:'Restricted. URL hit monitoring and bug triage across the sites.'},
+  {l:'Broadcast Mailer',v:'/admin_mailer',h:'Restricted. HTML template testing for mass email.'},
+  {l:'Access Level',v:'[Admin Only]',h:'These tools are private.'}]},
+ {n:'Exit',t:'Contact & Exit',items:[
+  {l:'Reddit',v:'u/Own-Significance9747',href:'https://reddit.com/user/Own-Significance9747',h:'Press Enter to open my Reddit profile.'},
+  {l:'Ecosystem Handle',v:'@princegoyal',h:'Find me everywhere under this handle.'},
+  {l:'Save Changes and Exit',v:'[F10]',act:'save',h:'Reboot the system. Replays the boot sequence.'}]}
+];
+let ti=0,ii=0,modal=false,yes=true;
+function render(){
+ $('tabs').innerHTML=tabs.map((t,i)=>`<button role="tab" data-t="${i}" class="${i==ti?'on':''}" aria-selected="${i==ti}">${t.n}</button>`).join('');
+ const T=tabs[ti];
+ $('list').innerHTML=`<h2>${T.t}</h2>`+T.items.map((it,i)=>`<div class="row ${i==ii?'sel':''}" data-i="${i}" role="option" aria-selected="${i==ii}"><span class="l">${it.l}</span><span class="v"${it.live?' id="clk"':''}>${it.v.replace(/&/g,'&amp;')}</span></div>`).join('');
+ const it=T.items[ii];$('help').innerHTML=`<p>${it.h}</p>`;
+ clock();
+ const s=document.querySelector('.row.sel');s&&s.scrollIntoView({block:'nearest'});
+}
+function clock(){const c=$('clk');if(c)c.textContent=new Date().toLocaleTimeString('en-GB')}
+setInterval(clock,1000);
+function go(a){
+ if(modal){
+  if(a=='left'||a=='right'||a=='up'||a=='down'){yes=!yes;dlg()}
+  else if(a=='esc'){modal=false;dlg()}
+  else if(a=='enter'){modal=false;dlg();if(yes)reboot()}
+  return;
+ }
+ const n=tabs[ti].items.length;
+ if(a=='left')ti=(ti+tabs.length-1)%tabs.length,ii=0;
+ else if(a=='right')ti=(ti+1)%tabs.length,ii=0;
+ else if(a=='up')ii=(ii+n-1)%n;
+ else if(a=='down')ii=(ii+1)%n;
+ else if(a=='esc')ti=tabs.length-1,ii=0;
+ else if(a=='f10'){modal=true;yes=true;dlg();return}
+ else if(a=='enter'){const it=tabs[ti].items[ii];if(it.href)window.open(it.href,'_blank','noopener');else if(it.act=='save'){modal=true;yes=true;dlg();return}}
+ render();
+}
+function dlg(){$('dlg').classList.toggle('show',modal);$('y').className=yes?'on':'';$('n').className=yes?'':'on'}
+addEventListener('keydown',e=>{
+ if(!$('post').hidden){skip();e.preventDefault();return}
+ const m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',Enter:'enter',Escape:'esc',F10:'f10'}[e.key];
+ if(m){e.preventDefault();go(m)}
+});
+$('tabs').onclick=e=>{const b=e.target.closest('[data-t]');if(b){ti=+b.dataset.t;ii=0;render()}};
+$('list').onclick=e=>{const r=e.target.closest('[data-i]');if(r){const same=ii==+r.dataset.i;ii=+r.dataset.i;render();if(same)go('enter')}};
+$('leg').onclick=e=>{const b=e.target.closest('[data-a]');if(b)go(b.dataset.a)};
+$('y').onclick=()=>{yes=true;go('enter')};$('n').onclick=()=>{yes=false;go('enter')};
+// POST sequence
+const lines=[
+ 'Prince Goyal BIOS v1.0 (C) 2026 HW_REV_1.0',
+ '',
+ 'CPU : Systems Architect, 4.20GHz',
+ 'Memory Test : PHP_8.x  MYSQL  JS  GEMINI_API  PYTHON   C/C++<b>OK</b>',
+ '',
+ 'Detecting boot devices...',
+ '  Cinestream  <b>OK</b>',
+ '  Zenith Hub  <b>OK</b>',
+ '  DropQr  <b>OK</b>',
+ '  URL Shortener  <b>OK</b>',
+ '  ExamCraft  <b>OK</b>',
+ '  Study Guard AI Elite  <b>OK</b>',
+ '',
+ 'Press <b>ANY KEY</b> to enter SETUP<span class="cur"></span>'
+];
+let timers=[];
+function post(){
+ const p=$('post');p.hidden=false;$('bios').hidden=true;p.innerHTML='';timers.forEach(clearTimeout);timers=[];
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches){p.innerHTML=lines.join('\n');timers.push(setTimeout(skip,1200));return}
+ lines.forEach((l,i)=>timers.push(setTimeout(()=>{p.innerHTML=lines.slice(0,i+1).join('\n')},i*230)));
+ timers.push(setTimeout(skip,lines.length*230+900));
+}
+function skip(){timers.forEach(clearTimeout);$('post').hidden=true;$('bios').hidden=false;render();$('list').focus({preventScroll:true})}
+function reboot(){$('bios').hidden=true;ti=0;ii=0;post()}
+$('post').onclick=skip;
+post();
+</script>
 </body>
 </html>
